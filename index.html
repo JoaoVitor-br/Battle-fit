@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Battle Fit</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- TOP HEADER -->
+  <header class="app-header">
+    <div class="header-content">
+      <div class="logo">
+        <img src="icons/tre.png" alt="Logo BattleFit">
+        BATTLE<span>FIT</span>
+      </div>
+
+      <!-- DESKTOP NAV TABS -->
+      <nav class="nav-tabs" id="mainNav">
+        <button class="nav-tab active" data-target="view-perfil">
+          <img class="nav-icon" src="icons/perfil_ativo.png" data-icon-inactive="icons/perfil.png" data-icon-active="icons/perfil_ativo.png" alt="" aria-hidden="true">
+          Perfil
+        </button>
+        <button class="nav-tab" data-target="view-treino">
+          <img class="nav-icon" src="icons/treino.png" data-icon-inactive="icons/treino.png" data-icon-active="icons/treino_ativo.png" alt="" aria-hidden="true">
+          Treinos
+        </button>
+        <button class="nav-tab" data-target="view-dieta">
+          <img class="nav-icon" src="icons/dieta.png" data-icon-inactive="icons/dieta.png" data-icon-active="icons/dieta_ativa.png" alt="" aria-hidden="true">
+          Dieta
+        </button>
+        <button class="nav-tab" data-target="view-insights">
+          <img class="nav-icon" src="icons/Obiservacoes.png" data-icon-inactive="icons/Obiservacoes.png" data-icon-active="icons/Obiservacoes_ativo.png" alt="" aria-hidden="true">
+          Observações
+        </button>
+        <button class="nav-tab" data-target="view-ranking">
+          <img class="nav-icon" src="icons/Rankins.png" data-icon-inactive="icons/Rankins.png" data-icon-active="icons/Rankings_ativo.png" alt="" aria-hidden="true">
+          Rankings
+        </button>
+      </nav>
+
+      <div class="user-badge-summary">
+        <div class="score-pill">
+          <span id="headerScore">0</span> PTS
+        </div>
+        <div class="division-pill" id="headerDivision">Iniciante</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- APP CONTAINER -->
+  <main class="app-container">
+
+    <!-- ==================== 1. PERFIL ==================== -->
+    <section id="view-perfil" class="view-panel active">
+      <div class="grid grid-2">
+        <div class="card">
+          <div class="card-title">
+            <span>Configurações do Perfil</span>
+          </div>
+          <form id="formPerfil">
+            <div class="form-group">
+              <label>Nome do Atleta</label>
+              <input type="text" id="profileName" class="form-control" required placeholder="Seu nome">
+            </div>
+            <div class="grid grid-2" style="gap: 0.5rem;">
+              <div class="form-group">
+                <label>Peso Atual (kg)</label>
+                <input type="number" step="0.1" min="20" max="300" id="profileWeight" class="form-control" required>
+              </div>
+              <div class="form-group">
+                <label>Meta de Peso (kg)</label>
+                <input type="number" step="0.1" min="20" max="300" id="profileTargetWeight" class="form-control" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Meta Calórica Diária (kcal)</label>
+              <input type="number" min="1000" max="10000" id="profileCalorieGoal" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Salvar Perfil</button>
+          </form>
+        </div>
+
+        <div class="card">
+          <div class="card-title">
+            <span>📈 Evolução do Peso Corporal</span>
+          </div>
+          <div class="chart-container">
+            <canvas id="chartWeight"></canvas>
+          </div>
+          <div style="margin-top: 1rem;">
+            <form id="formAddWeight" class="grid grid-2" style="align-items: flex-end;">
+              <div class="form-group" style="margin-bottom:0;">
+                <label>Registrar Peso Hoje (kg)</label>
+                <input type="number" step="0.1" min="20" max="300" id="newWeightVal" class="form-control" required>
+              </div>
+              <button type="submit" class="btn btn-secondary">Adicionar</button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- SESSÃO DE CONQUISTAS UNLOCKED -->
+      <div class="card" style="margin-top: 1rem;">
+        <div class="card-title">
+          <span>Badges e Conquistas</span>
+          <span style="font-size: 0.8rem; color: var(--text-muted);" id="badgesCount">0/4 Desbloqueadas</span>
+        </div>
+        <div class="badges-grid" id="badgesContainer"></div>
+      </div>
+    </section>
+
+    <!-- ==================== 2. MÓDULO TREINO ==================== -->
+    <section id="view-treino" class="view-panel">
+      <div class="grid grid-2">
+        <!-- Cadastro de Exercício e Execução -->
+        <div class="card">
+          <div class="card-title"><span>Registrar Execução de Treino</span></div>
+          <form id="formExecution">
+            <div class="form-group">
+              <label>Data</label>
+              <input type="date" id="execDate" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label>Tipo de Exercício</label>
+              <select id="execType" class="form-control">
+                <option value="forca">Força (Musculação/Calistenia)</option>
+                <option value="cardio">Cardio (Corrida/Bike/Natação)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Nome do Exercício</label>
+              <input type="text" id="execName" class="form-control" placeholder="Ex: Supino Reto, Corrida" required>
+            </div>
+            <div class="form-group">
+              <label>Grupo Muscular / Categoria</label>
+              <select id="execGroup" class="form-control">
+                <option value="Peito">Peito</option>
+                <option value="Costas">Costas</option>
+                <option value="Pernas">Pernas</option>
+                <option value="Ombros">Ombros</option>
+                <option value="Bracos">Braços</option>
+                <option value="Core">Core/Abdômen</option>
+                <option value="Cardio">Cardio Geral</option>
+              </select>
+            </div>
+
+            <!-- Campos Força -->
+            <div id="fieldsForca">
+              <div class="grid grid-3">
+                <div class="form-group">
+                  <label>Carga (kg)</label>
+                  <input type="number" step="0.5" min="0" id="execWeight" class="form-control" value="0">
+                </div>
+                <div class="form-group">
+                  <label>Reps</label>
+                  <input type="number" min="1" id="execReps" class="form-control" value="10">
+                </div>
+                <div class="form-group">
+                  <label>Séries</label>
+                  <input type="number" min="1" id="execSets" class="form-control" value="3">
+                </div>
+              </div>
+            </div>
+
+            <!-- Campos Cardio -->
+            <div id="fieldsCardio" style="display: none;">
+              <div class="grid grid-2">
+                <div class="form-group">
+                  <label>Tempo (minutos)</label>
+                  <input type="number" min="1" id="execTime" class="form-control" value="30">
+                </div>
+                <div class="form-group">
+                  <label>Gasto Calórico Est. (kcal)</label>
+                  <input type="number" min="1" id="execBurned" class="form-control" value="250">
+                </div>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="margin-top: 0.5rem;">Salvar Exercício</button>
+          </form>
+        </div>
+
+        <!-- Análise de VGT e Gráfico -->
+        <div class="card">
+          <div class="card-title">
+            <span>Volume Geral de Treino (VGT)</span>
+            <span id="vgtStatusBadge" class="badge-status status-evolution">Evolução</span>
+          </div>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">
+            Fórmula VGT: <strong>Carga × Repetições × Séries</strong>. Reflete a sobrecarga progressiva real.
+          </p>
+          <div class="chart-container">
+            <canvas id="chartVGT"></canvas>
+          </div>
+          <div style="margin-top: 1rem;" class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Data</th>
+                  <th>Exercício</th>
+                  <th>Carga/Reps</th>
+                  <th>VGT Inst.</th>
+                </tr>
+              </thead>
+              <tbody id="tableExecutions"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 3. MÓDULO DIETA ==================== -->
+    <section id="view-dieta" class="view-panel">
+      <div class="grid grid-2">
+        <!-- Registrar Refeição -->
+        <div class="card">
+          <div class="card-title"><span>Registrar Refeição Diária</span></div>
+          <form id="formMeal">
+            <div class="form-group">
+              <label>Data</label>
+              <input type="date" id="mealDate" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label>Descrição da Refeição / Alimento</label>
+              <input type="text" id="mealName" class="form-control" placeholder="Ex: Almoço, Frango com Batata Doce" required>
+            </div>
+            <div class="grid grid-2">
+              <div class="form-group">
+                <label>Calorias (kcal)</label>
+                <input type="number" min="0" id="mealCalories" class="form-control" required>
+              </div>
+              <div class="form-group">
+                <label>Proteínas (g)</label>
+                <input type="number" step="0.1" min="0" id="mealProtein" class="form-control" required>
+              </div>
+            </div>
+            <div class="grid grid-2">
+              <div class="form-group">
+                <label>Carboidratos (g)</label>
+                <input type="number" step="0.1" min="0" id="mealCarbs" class="form-control" value="0">
+              </div>
+              <div class="form-group">
+                <label>Gorduras (g)</label>
+                <input type="number" step="0.1" min="0" id="mealFat" class="form-control" value="0">
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Adicionar Refeição</button>
+          </form>
+        </div>
+
+        <!-- Balanço Calórico Ajustado -->
+        <div class="card">
+          <div class="card-title">
+            <span>Balanço Calórico Ajustado (Hoje)</span>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); text-align: center; gap: 0.5rem; margin-bottom: 1rem;">
+            <div style="background: var(--bg-dark); padding: 0.5rem; border-radius: 8px;">
+              <div style="font-size: 0.75rem; color: var(--text-muted);">Consumido</div>
+              <div style="font-weight:700; color: var(--accent-highlight);" id="valConsumido">0 kcal</div>
+            </div>
+            <div style="background: var(--bg-dark); padding: 0.5rem; border-radius: 8px;">
+              <div style="font-size: 0.75rem; color: var(--text-muted);">Gasto Treino</div>
+              <div style="font-weight:700; color: var(--accent-secondary);" id="valGasto">0 kcal</div>
+            </div>
+            <div style="background: var(--bg-dark); padding: 0.5rem; border-radius: 8px;">
+              <div style="font-size: 0.75rem; color: var(--text-muted);">Meta Ajustada</div>
+              <div style="font-weight:700; color: var(--accent-primary);" id="valMetaAjustada">0 kcal</div>
+            </div>
+          </div>
+
+          <div class="chart-container">
+            <canvas id="chartCaloricBalance"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 4. INSIGHTS DINÂMICOS ==================== -->
+    <section id="view-insights" class="view-panel">
+      <div class="card">
+        <div class="card-title">
+          <span>Painel de Diagnóstico Cruzado Autónomo</span>
+        </div>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.5rem;">
+          Algoritmo client-side que analisa padrões entre seus treinos, consumo de macronutrientes e variação de peso.
+        </p>
+        
+        <div id="insightsContainer">
+          <!-- Insights injetados dinamicamente via JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 5. RANKING & GAMIFICAÇÃO ==================== -->
+    <section id="view-ranking" class="view-panel">
+      <div class="grid grid-2">
+        <!-- Rankings por Liga -->
+        <div class="card">
+          <div class="card-title">
+            <span>Ranking da Liga (Índice de Consistência)</span>
+          </div>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1rem;">
+            A pontuação é calculada por <strong>adesão às metas e evolução relativa (%)</strong>. Biotipos e cargas absolutas não afetam a classificação.
+          </p>
+          <div id="rankingList"></div>
+        </div>
+
+        <!-- Comparador & Desafios Coletivos -->
+        <div class="grid" style="gap: 1rem;">
+          <div class="card">
+            <div class="card-title"><span>Comparador de Disciplina</span></div>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.75rem;">
+              Comparação anônima de métricas relativas de esforço:
+            </p>
+            <div id="comparisonContainer"></div>
+          </div>
+
+          <div class="card" style="border-color: var(--accent-highlight);">
+            <div class="card-title"><span style="color: var(--accent-highlight);">Desafio Coletivo da Comunidade</span></div>
+            <div style="background: rgba(173, 0, 255, 0.12); padding: 0.75rem; border-radius: 8px;">
+              <strong style="font-size: 0.9rem;">Meta: 10.000 kg de Volume Coletivo</strong>
+              <div style="margin: 0.5rem 0; background: var(--bg-dark); height: 10px; border-radius: 5px; overflow: hidden;">
+                <div id="communityProgressBar" style="width: 0%; background: var(--accent-highlight); height: 100%; transition: var(--transition);"></div>
+              </div>
+              <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted);">
+                <span id="communityProgressTxt">0 kg acumulados</span>
+                <span>Prazo: 7 dias</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MOBILE BOTTOM NAV -->
+  <nav class="nav-tabs" id="mobileNav">
+    <button class="nav-tab active" data-target="view-perfil">
+      <img class="nav-icon" src="icons/perfil_ativo.png" data-icon-inactive="icons/perfil.png" data-icon-active="icons/perfil_ativo.png" alt="" aria-hidden="true">
+      Perfil
+    </button>
+    <button class="nav-tab" data-target="view-treino">
+      <img class="nav-icon" src="icons/treino.png" data-icon-inactive="icons/treino.png" data-icon-active="icons/treino_ativo.png" alt="" aria-hidden="true">
+      Treinos
+    </button>
+    <button class="nav-tab" data-target="view-dieta">
+      <img class="nav-icon" src="icons/dieta.png" data-icon-inactive="icons/dieta.png" data-icon-active="icons/dieta_ativa.png" alt="" aria-hidden="true">
+      Dieta
+    </button>
+    <button class="nav-tab" data-target="view-insights">
+      <img class="nav-icon" src="icons/Obiservacoes.png" data-icon-inactive="icons/Obiservacoes.png" data-icon-active="icons/Obiservacoes_ativo.png" alt="" aria-hidden="true">
+      Insights
+    </button>
+    <button class="nav-tab" data-target="view-ranking">
+      <img class="nav-icon" src="icons/Rankins.png" data-icon-inactive="icons/Rankins.png" data-icon-active="icons/Rankings_ativo.png" alt="" aria-hidden="true">
+      Rankings
+    </button>
+  </nav>
+
+  <!-- ==========================================
+       JAVASCRIPT AUTÔNOMO CLIENT-SIDE (ES6)
+       ========================================== -->
+  <script src="script.js" defer></script>
+</body>
+</html>
